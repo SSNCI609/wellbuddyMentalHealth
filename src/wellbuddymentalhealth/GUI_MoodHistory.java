@@ -180,9 +180,23 @@ public class GUI_MoodHistory extends javax.swing.JFrame {
     }//GEN-LAST:event_btnShowAllActionPerformed
     // button for view entry
     private void btnViewEntryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewEntryActionPerformed
-        GUI_EntryDetails detailsScreen = new GUI_EntryDetails();
+        
+        //get the row number the user selected in the table 
+        //(-1 means nothing is selected)
+        int row = tblEntries.getSelectedRow();
+        //check an entry is selected and show a message if it isn't
+        if (row == -1) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Please select an entry first.");
+        return;
+        }
+        //use the row number to get the matching entry from the list 
+        //currently shown in the table.
+        MoodEntry selected = displayedEntries.get(row);
+        GUI_EntryDetails detailsScreen = new GUI_EntryDetails(selected);        
         detailsScreen.setLocationRelativeTo(this);
         detailsScreen.setVisible(true);
+        //close the Mood History screen.
         this.dispose();
     }//GEN-LAST:event_btnViewEntryActionPerformed
     // button to mental health menu

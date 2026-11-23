@@ -360,10 +360,10 @@ public class GUI_RecordMood extends javax.swing.JFrame {
 
     manager.addEntry(entry);
 
-        JOptionPane.showMessageDialog(this, 
-                "Entry saved for this session."
-            + "\nTotal stress: " + entry.getTotalStress() + "/12"
-            + "\nEntries recorded: " + manager.getEntryCount());
+        JOptionPane.showMessageDialog(this, """
+                                            Entry saved.
+                                            Total stress: """ + entry.getTotalStress() 
+                    + "/12" + "\nEntries recorded: " + manager.getEntryCount());
 
 //GUI_EntryDetails detailsScreen = new GUI_EntryDetails();
 GUI_EntryDetails detailsScreen = new GUI_EntryDetails(entry);
