@@ -1,37 +1,26 @@
-# WellBuddy — Mental Health Section             (17 Nov 2026)
+# WellBuddy — Mental Health Section
 
-## What's New in This Commit?
+This is the Mental Health section of the WellBuddy Java project, by Shane Smyth.
 
-I added the code to record a mood entry, store it while the app is running, display its details and show it in the mood history table.
-I also added checks for invalid dates and unanswered stress questions.
-
-## What Was Added?
+## Classes
 
 - **MoodEntry:** A class to store the date, mood and notes for one entry.
-- **StressMoodEntry:** Extends MoodEntry to include three stress responses, each scored [0–4]. It adds these responses together to give a total out of 12.
-- **MoodManager:** I added an ArrayList to hold the mood entries, with methods to add, retrieve, remove and count them. *The remove method is not connected to the Delete button yet.*
-- **MentalHealthData:** A shared class so all screens use the same MoodManager, which keeps entries available when the user switches screens.
-- **GUI_RecordMood:** Connected the Save Entry button to read the form, check the input, create an entry and add it to the list.
-- **GUI_EntryDetails:** Added a constructor that receives an entry and displays its information after saving.
-- **GUI_MoodHistory:** Connected the table to the stored entries so it displays their dates, moods and stress totals.
+- **StressMoodEntry:** Extends MoodEntry and implements Scorable. It includes three stress scores, each from 0 to 4, added together for a total out of 12.
+- **Scorable:** An interface for anything that has a score.
+- **MoodManager:** An ArrayList of entries, with methods to add, retrieve, remove and count them. It also saves and loads the file.
+- **MentalHealthData:** A shared class so all screens use the same MoodManager.
+- **GUI_MoodManager:** The Mental Health menu.
+- **GUI_RecordMood:** The screen for recording a new mood entry.
+- **GUI_ManageEntries:** The screen for searching, showing and deleting entries.
 
-The entries are currently stored in memory, so they disappear when the app is closed.
+## Features
 
-## Ideas for Future Development
+- I can record a mood with a stress check-in of three questions, each scored 0 to 4, for a total out of 12, and optional notes. Today's date is filled in automatically. The form checks that the date is valid and that all three questions are answered.
+- Mood History shows a popup list of all entries.
+- Statistics shows a popup with the total entries, the count for each mood, the most common mood and the average stress out of 12.
+- In Manage Entries I can search by date, show all, or delete an entry (I type yes to confirm).
+- Entries are saved to moodentries.txt and loaded when the app starts.
 
-I may separate recording a mood now from managing previous entries.
+## OOP
 
-- **Record Mood Now:** Use Java's date and time tools to automatically record the current date and time.
-- **Manage Previous Entries:** Allow the user to add a missed entry for an earlier date or edit an existing entry, including its notes, and choose the date and time the entry relates to.
-- **Date and Time Validation:** Check that manually entered dates and times are valid and prevent future entries.
-- **Track Changes:** Keep the original creation time and the last edited time separate from the date and time the mood entry relates to.
-
-## What Is Next?
-
-- **Data storage:** Save entries to a file so they persist after the app is closed.
-
-Finish the Mood History screen so the user can:
-- Select an entry and open its details.
-- Search for entries by date.
-- Click Show All to return to the full list.
-- See a helpful message if nothing is selected or no entries match the search.
+StressMoodEntry extends MoodEntry and implements Scorable. getSummary is overridden, which is polymorphism.
