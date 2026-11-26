@@ -37,7 +37,7 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblDailyNote" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblAppTitle2" alignment="0" min="-2" pref="377" max="-2" attributes="0"/>
+                          <Component id="lblScaleHint" alignment="0" min="-2" pref="377" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -46,7 +46,7 @@
                           <Group type="102" attributes="0">
                               <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="btnSaveE" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnSaveEntry" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
@@ -56,7 +56,7 @@
                                           <Group type="102" attributes="0">
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Component id="lbl2SOrad" min="-2" pref="166" max="-2" attributes="0"/>
-                                                  <Component id="lblAppTitle1" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                                  <Component id="lblStressTitle" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
                                               </Group>
                                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           </Group>
@@ -148,9 +148,9 @@
                   <Component id="cmbMood" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-              <Component id="lblAppTitle1" min="-2" max="-2" attributes="0"/>
+              <Component id="lblStressTitle" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lblAppTitle2" min="-2" max="-2" attributes="0"/>
+              <Component id="lblScaleHint" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lbl1SOrad" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -185,7 +185,7 @@
               <EmptySpace pref="11" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnCancel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnSaveE" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnSaveEntry" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
           </Group>
@@ -211,7 +211,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblDate">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Date (DD/MM/YYYY)"/>
+        <Property name="text" type="java.lang.String" value="Date (today, change if needed)"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtDate">
@@ -384,7 +384,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblAppTitle1">
+    <Component class="javax.swing.JLabel" name="lblStressTitle">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica Neue" size="18" style="0"/>
@@ -417,7 +417,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="lblAppTitle2">
+    <Component class="javax.swing.JLabel" name="lblScaleHint">
       <Properties>
         <Property name="text" type="java.lang.String" value="0 Never &#xb7; 1 Rarely &#xb7; 2 Sometimes &#xb7; 3 Often &#xb7; 4 Very often"/>
       </Properties>
@@ -430,12 +430,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnSaveE">
+    <Component class="javax.swing.JButton" name="btnSaveEntry">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save Entry"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveEActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveEntryActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

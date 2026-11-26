@@ -1,39 +1,114 @@
 /*
- * shane smyth
- * 
+ * Shane Smyth
+ * Record Mood GUI - adds a new mood entry
  */
+
 package wellbuddymentalhealth;
+// LocalDate is used to check the date
 import java.time.LocalDate;
+// DateTimeFormatter sets the date pattern
 import java.time.format.DateTimeFormatter;
+// thrown if the date is not valid
 import java.time.format.DateTimeParseException;
+// STRICT means 31/02 is not allowed
 import java.time.format.ResolverStyle;
+// JOptionPane shows popup messages
 import javax.swing.JOptionPane;
 
+// this screen lets the user record a mood
 public class GUI_RecordMood extends javax.swing.JFrame {
     
-    private final MoodManager manager = MentalHealthData.getManager();
+    // the shared manager that stores entries
+    private final MoodManager manager =
+        // getManager is the shared manager
+        MentalHealthData.getManager();
     
+    // constructor builds the screen
     public GUI_RecordMood() {
         
+        // builds the buttons and labels
         initComponents();
         
+        // this pattern is DD/MM/YYYY
+        // uuuu is the year; yyyy fails strict checking`.
+        DateTimeFormatter todayFormat;
+        todayFormat = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+        // LocalDate.now() is today's date
+        String today = LocalDate.now()
+            .format(todayFormat);
+        // setText puts today in the date box
+        txtDate.setText(today);
+        
+        // pressure score 0
         radPressure0.setActionCommand("0");
+        // pressure score 1
         radPressure1.setActionCommand("1");
+        // pressure score 2
         radPressure2.setActionCommand("2");
+        // pressure score 3
         radPressure3.setActionCommand("3");
+        // pressure score 4
         radPressure4.setActionCommand("4");
 
+        // switch-off score 0
         radSwitchOff0.setActionCommand("0");
+        // switch-off score 1
         radSwitchOff1.setActionCommand("1");
+        // switch-off score 2
         radSwitchOff2.setActionCommand("2");
+        // switch-off score 3
         radSwitchOff3.setActionCommand("3");
+        // switch-off score 4
         radSwitchOff4.setActionCommand("4");
 
+        // overwhelmed score 0
         radOverwh0.setActionCommand("0");
+        // overwhelmed score 1
         radOverwh1.setActionCommand("1");
+        // overwhelmed score 2
         radOverwh2.setActionCommand("2");
+        // overwhelmed score 3
         radOverwh3.setActionCommand("3");
+        // overwhelmed score 4
         radOverwh4.setActionCommand("4");
+    }
+
+    // take spaces off the start and end
+    private String stripSpaces(String text) {
+        // remove spaces at the start
+        while (text.length() > 0) {
+            // substring(0, 1) is the first character
+            String first = text.substring(0, 1);
+            if (first.equals(" ")
+                    || first.equals("\n")
+                    || first.equals("\t")
+                    || first.equals("\r")) {
+                // drop the first character
+                text = text.substring(1);
+            } else {
+                // no more spaces at the start
+                break;
+            }
+        }
+        // remove spaces at the end
+        while (text.length() > 0) {
+            // last character in the string
+            String last = text.substring(
+                text.length() - 1);
+            if (last.equals(" ")
+                    || last.equals("\n")
+                    || last.equals("\t")
+                    || last.equals("\r")) {
+                // drop the last character
+                text = text.substring(
+                    0, text.length() - 1);
+            } else {
+                // no more spaces at the end
+                break;
+            }
+        }
+        // return the cleaned text
+        return text;
     }
 
     /**
@@ -72,13 +147,13 @@ public class GUI_RecordMood extends javax.swing.JFrame {
         radOverwh1 = new javax.swing.JRadioButton();
         radOverwh2 = new javax.swing.JRadioButton();
         radOverwh3 = new javax.swing.JRadioButton();
-        lblAppTitle1 = new javax.swing.JLabel();
+        lblStressTitle = new javax.swing.JLabel();
         lblDailyNote = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtNotes = new javax.swing.JTextArea();
-        lblAppTitle2 = new javax.swing.JLabel();
+        lblScaleHint = new javax.swing.JLabel();
         btnCancel = new javax.swing.JButton();
-        btnSaveE = new javax.swing.JButton();
+        btnSaveEntry = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,7 +163,7 @@ public class GUI_RecordMood extends javax.swing.JFrame {
         lblSectionTitle.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         lblSectionTitle.setText("Record Mood");
 
-        lblDate.setText("Date (DD/MM/YYYY)");
+        lblDate.setText("Date (today, change if needed)");
 
         txtDate.setText("10/11/2026");
 
@@ -156,8 +231,8 @@ public class GUI_RecordMood extends javax.swing.JFrame {
         radOverwh3.setText("3");
         radOverwh3.setToolTipText("");
 
-        lblAppTitle1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        lblAppTitle1.setText("Stress check-in");
+        lblStressTitle.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        lblStressTitle.setText("Stress check-in");
 
         lblDailyNote.setText("Daily notes (optional)");
 
@@ -168,13 +243,13 @@ public class GUI_RecordMood extends javax.swing.JFrame {
         txtNotes.setWrapStyleWord(true);
         jScrollPane1.setViewportView(txtNotes);
 
-        lblAppTitle2.setText("0 Never · 1 Rarely · 2 Sometimes · 3 Often · 4 Very often");
+        lblScaleHint.setText("0 Never · 1 Rarely · 2 Sometimes · 3 Often · 4 Very often");
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(this::btnCancelActionPerformed);
 
-        btnSaveE.setText("Save Entry");
-        btnSaveE.addActionListener(this::btnSaveEActionPerformed);
+        btnSaveEntry.setText("Save Entry");
+        btnSaveEntry.addActionListener(this::btnSaveEntryActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -186,14 +261,14 @@ public class GUI_RecordMood extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblDailyNote)
-                            .addComponent(lblAppTitle2, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblScaleHint, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnCancel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSaveE))
+                                .addComponent(btnSaveEntry))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -202,7 +277,7 @@ public class GUI_RecordMood extends javax.swing.JFrame {
                                             .addGroup(layout.createSequentialGroup()
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(lbl2SOrad, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(lblAppTitle1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addComponent(lblStressTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGap(0, 0, Short.MAX_VALUE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(lbl1SOrad, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -270,9 +345,9 @@ public class GUI_RecordMood extends javax.swing.JFrame {
                     .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbMood, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21)
-                .addComponent(lblAppTitle1)
+                .addComponent(lblStressTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblAppTitle2)
+                .addComponent(lblScaleHint)
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl1SOrad)
@@ -304,77 +379,114 @@ public class GUI_RecordMood extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
-                    .addComponent(btnSaveE))
+                    .addComponent(btnSaveEntry))
                 .addGap(12, 12, 12))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // button for cancel
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+    // open the Mental Health menu
     GUI_MoodManager menuScreen = new GUI_MoodManager();
+    // setLocationRelativeTo centres it
     menuScreen.setLocationRelativeTo(this);
+    // setVisible(true) shows the menu
     menuScreen.setVisible(true);
+    // dispose closes this screen
     this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     // button for save
-    private void btnSaveEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveEActionPerformed
-        String date = txtDate.getText().trim();
+    private void btnSaveEntryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveEntryActionPerformed
+        // getText reads the date box
+        // stripSpaces removes extra spaces
+        String date = stripSpaces(txtDate.getText());
+        // getSelectedItem is the chosen mood
+        // (String) casts it to a String
         String mood = (String) cmbMood.getSelectedItem();
-        String notes = txtNotes.getText().trim();
+        // getText reads the notes box
+        // stripSpaces removes extra spaces
+        String notes = stripSpaces(txtNotes.getText());
 
+        // this pattern is DD/MM/YYYY
         DateTimeFormatter dateFormat = DateTimeFormatter
+        // uuuu means the year
         .ofPattern("dd/MM/uuuu")
+        // STRICT rejects dates like 31/02
         .withResolverStyle(ResolverStyle.STRICT);
 
+        // try, in case the date is not valid
         try {
+            // parse checks the date text
             LocalDate.parse(date, dateFormat);
+        // thrown if the date cannot be read
         } catch (DateTimeParseException ex) {
+            // a popup to tell the user
             JOptionPane.showMessageDialog(this,
                 "Enter a valid date in DD/MM/YYYY format.");
+            // return stops the method here
             return;
         }
 
+    // null means a question was not answered
     if (grpPressure.getSelection() == null
+        // or is true if any group is empty
         || grpSwitchOff.getSelection() == null
         || grpOverwh.getSelection() == null) {
 
+        // a popup to tell the user
         JOptionPane.showMessageDialog(this,
                 "Please answer all three stress questions.");
+        // return stops the method here
         return;
     }
 
+    // pressure score from the radio group
     int pressure = Integer.parseInt(
+        // getActionCommand is 0 to 4
         grpPressure.getSelection().getActionCommand());
 
+    // switch-off score from the radio group
     int switchOff = Integer.parseInt(
         grpSwitchOff.getSelection().getActionCommand());
 
+    // overwhelmed score from the radio group
     int overwhelmed = Integer.parseInt(
         grpOverwh.getSelection().getActionCommand());
 
+    // make a new stress mood entry
     StressMoodEntry entry = new StressMoodEntry(
         date, mood, notes, pressure, switchOff, overwhelmed);
 
+    // addEntry stores it and saves the file
     manager.addEntry(entry);
 
-        JOptionPane.showMessageDialog(this, """
-                                            Entry saved.
-                                            Total stress: """ + entry.getTotalStress() 
-                    + "/12" + "\nEntries recorded: " + manager.getEntryCount());
+        // a popup to confirm it was saved
+        JOptionPane.showMessageDialog(
+            this, "Entry saved."
+            + "\nTotal stress: "
+            + entry.getTotalStress()
+            // /12 is the highest total
+            + "/12"
+            + "\nEntries recorded: "
+            + manager.getEntryCount());
 
-//GUI_EntryDetails detailsScreen = new GUI_EntryDetails();
-GUI_EntryDetails detailsScreen = new GUI_EntryDetails(entry);
-detailsScreen.setLocationRelativeTo(this);
-detailsScreen.setVisible(true);
-this.dispose();
-    }//GEN-LAST:event_btnSaveEActionPerformed
+        // go back to the Mental Health menu
+        GUI_MoodManager menuScreen =
+            // new creates the menu screen
+            new GUI_MoodManager();
+        // setLocationRelativeTo centres it
+        menuScreen.setLocationRelativeTo(this);
+        // setVisible(true) shows the menu
+        menuScreen.setVisible(true);
+        // dispose closes this screen
+        this.dispose();
+    }//GEN-LAST:event_btnSaveEntryActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnSaveE;
+    private javax.swing.JButton btnSaveEntry;
     private javax.swing.JComboBox<String> cmbMood;
     private javax.swing.ButtonGroup grpOverwh;
     private javax.swing.ButtonGroup grpPressure;
@@ -384,8 +496,8 @@ this.dispose();
     private javax.swing.JLabel lbl2SOrad;
     private javax.swing.JLabel lbl3SOrad;
     private javax.swing.JLabel lblAppTitle;
-    private javax.swing.JLabel lblAppTitle1;
-    private javax.swing.JLabel lblAppTitle2;
+    private javax.swing.JLabel lblStressTitle;
+    private javax.swing.JLabel lblScaleHint;
     private javax.swing.JLabel lblDailyNote;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblMood;

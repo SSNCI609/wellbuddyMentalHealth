@@ -1,13 +1,48 @@
 /*
- * shane smyth
- * 
+ * Shane Smyth
+ * Mental Health menu GUI
  */
 package wellbuddymentalhealth;
+
+// ArrayList is a list that can grow
+import java.util.ArrayList;
+// JOptionPane shows popup messages
+import javax.swing.JOptionPane;
 
 public class GUI_MoodManager extends javax.swing.JFrame {
     
     public GUI_MoodManager() {
         initComponents();
+    }
+
+    // show a list of entries in one message
+    private void showEntries(
+            ArrayList<MoodEntry> list) {
+        // == 0 means the list is empty
+        if (list.size() == 0) {
+            // a popup to tell the user
+            JOptionPane.showMessageDialog(
+                this, "There are no entries.");
+            // return stops the method here
+            return;
+        }
+        // start with an empty string
+        String text = "";
+        // index loop, one entry at a time
+        for (int i = 0; i < list.size(); i++) {
+            // get(i) takes the entry at index i
+            MoodEntry e = list.get(i);
+            // getSummary is overridden
+            // in StressMoodEntry
+            // so stress entries show their score
+            // (this is polymorphism)
+            text = text + e.getSummary();
+            // \n starts a new line in the popup
+            text = text + "\n";
+        }
+        // one popup shows the whole list
+        JOptionPane.showMessageDialog(
+            this, text);
     }
 
     /**
@@ -25,7 +60,7 @@ public class GUI_MoodManager extends javax.swing.JFrame {
         btnRecordMood = new javax.swing.JButton();
         btnMoodHistory = new javax.swing.JButton();
         btnManageEntries = new javax.swing.JButton();
-        btnStatistics1 = new javax.swing.JButton();
+        btnStatistics = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,8 +80,8 @@ public class GUI_MoodManager extends javax.swing.JFrame {
         btnManageEntries.setText("Manage Entries");
         btnManageEntries.addActionListener(this::btnManageEntriesActionPerformed);
 
-        btnStatistics1.setText("Statistics");
-        btnStatistics1.addActionListener(this::btnStatistics1ActionPerformed);
+        btnStatistics.setText("Statistics");
+        btnStatistics.addActionListener(this::btnStatisticsActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -57,7 +92,7 @@ public class GUI_MoodManager extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnStatistics1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnStatistics, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRecordMood, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -90,25 +125,116 @@ public class GUI_MoodManager extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnManageEntries, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                    .addComponent(btnStatistics1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnStatistics, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 // button for statistics
-    private void btnStatistics1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatistics1ActionPerformed
-        GUI_Statistics nextScreen = new GUI_Statistics();
-        nextScreen.setLocationRelativeTo(this);
-        nextScreen.setVisible(true);
-        dispose();
-    }//GEN-LAST:event_btnStatistics1ActionPerformed
+    private void btnStatisticsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatisticsActionPerformed
+        // get every saved entry
+        ArrayList<MoodEntry> list =
+            MentalHealthData.getManager()
+                .getEntries();
+        // no entries yet, so stop here
+        if (list.size() == 0) {
+            JOptionPane.showMessageDialog(
+                this,
+                "There are no entries yet.");
+            return;
+        }
+        // counters for each mood in the combo
+        int great = 0;
+        int good = 0;
+        int okay = 0;
+        int low = 0;
+        int veryLow = 0;
+        // stress totals for the average
+        int stressTotal = 0;
+        int stressCount = 0;
+        // index loop, one entry at a time
+        for (int i = 0; i < list.size(); i++) {
+            MoodEntry e = list.get(i);
+            String mood = e.getMood();
+            // .equals compares Strings, not ==
+            if (mood.equals("Great")) {
+                great = great + 1;
+            }
+            if (mood.equals("Good")) {
+                good = good + 1;
+            }
+            if (mood.equals("Okay")) {
+                okay = okay + 1;
+            }
+            if (mood.equals("Low")) {
+                low = low + 1;
+            }
+            // combo box uses "Very low"
+            if (mood.equals("Very low")) {
+                veryLow = veryLow + 1;
+            }
+            // Manager-slide: check then cast
+            if (e instanceof StressMoodEntry) {
+                StressMoodEntry s =
+                    (StressMoodEntry) e;
+                // getTotalStress is 0 to 12
+                stressTotal = stressTotal
+                    + s.getTotalStress();
+                stressCount = stressCount + 1;
+            }
+        }
+        // start with Great, then compare
+        String common = "Great";
+        int highest = great;
+        if (good > highest) {
+            highest = good;
+            common = "Good";
+        }
+        if (okay > highest) {
+            highest = okay;
+            common = "Okay";
+        }
+        if (low > highest) {
+            highest = low;
+            common = "Low";
+        }
+        if (veryLow > highest) {
+            highest = veryLow;
+            common = "Very low";
+        }
+        // build one string for the popup
+        String text = "Total entries: "
+            + list.size();
+        text = text + "\nGreat: " + great;
+        text = text + "\nGood: " + good;
+        text = text + "\nOkay: " + okay;
+        text = text + "\nLow: " + low;
+        text = text + "\nVery low: " + veryLow;
+        text = text + "\nMost common mood: "
+            + common;
+        // do not divide if count is 0
+        if (stressCount == 0) {
+            text = text
+                + "\nNo stress scores yet.";
+        } else {
+            // double so the average can be 2.5
+            double avg = (double) stressTotal
+                / stressCount;
+            text = text + "\nAverage stress: "
+                + avg + " / 12";
+        }
+        JOptionPane.showMessageDialog(
+            this, text);
+    }//GEN-LAST:event_btnStatisticsActionPerformed
 //button for history
     private void btnMoodHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoodHistoryActionPerformed
-        GUI_MoodHistory nextScreen = new GUI_MoodHistory();
-        nextScreen.setLocationRelativeTo(this);
-        nextScreen.setVisible(true);
-        this.dispose();
+        // get every saved entry
+        ArrayList<MoodEntry> list =
+            MentalHealthData.getManager()
+                .getEntries();
+        // show them in one popup
+        showEntries(list);
     }//GEN-LAST:event_btnMoodHistoryActionPerformed
 //button for manage entries
     private void btnManageEntriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageEntriesActionPerformed
@@ -137,7 +263,7 @@ public class GUI_MoodManager extends javax.swing.JFrame {
     private javax.swing.JButton btnManageEntries;
     private javax.swing.JButton btnMoodHistory;
     private javax.swing.JButton btnRecordMood;
-    private javax.swing.JButton btnStatistics1;
+    private javax.swing.JButton btnStatistics;
     private javax.swing.JLabel lblAppTitle;
     private javax.swing.JLabel lblSectionTitle;
     // End of variables declaration//GEN-END:variables
